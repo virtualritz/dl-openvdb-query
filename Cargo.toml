@@ -10,6 +10,7 @@ readme = "README.md"
 homepage = "https://www.3delight.com/"
 keywords = ["graphics", "rendering", "3d", "openvdb"]
 categories = ["graphics", "rendering::graphics-api"]
+repository = "https://github.com/virtualritz/dl-openvdb-query"
 
 [dependencies]
 lazy_static = "1.4.0"
