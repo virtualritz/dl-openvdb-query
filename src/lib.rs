@@ -1,11 +1,12 @@
 //! Safe wrapper for [3Delight](https://www.3delight.com/)’s
-//! [OpenVDB](https://www.openvdb.org/) query API.
+//! [OpenVDB](https://www.openvdb.org/) metadata query API.
 //!
 //! ```
-//! let open_vdb_query = dl_openvdb_query::DlOpenVdbQuery::new(
-//!      "tests/sphere_points.vdb",
-//! )
-//! .unwrap();
+//! let open_vdb_query =
+//!     dl_openvdb_query::DlOpenVdbQuery::new(
+//!          "tests/sphere_points.vdb",
+//!     )
+//!     .unwrap();
 //!
 //! let min = -0.9416000247001648;
 //! let max =  1.0593000277876854;
@@ -13,12 +14,16 @@
 //!     [min, min, min, max, max, max],
 //!     open_vdb_query.bounding_box().unwrap()
 //! );
-//! assert_eq!(vec!["points"], open_vdb_query.grid_names().unwrap());
+//! assert_eq!(
+//!     vec!["points"],
+//!     open_vdb_query.grid_names().unwrap()
+//! );
 //! ```
 //! The `lib3delight` dynamic library can be linked to or it can
 //! be loaded at runtime. The latter is the default.
 //!
 //! Linking can be forced using the feature `link_lib3delight`.
+
 #![allow(non_snake_case)]
 use std::{
     ffi::{CStr, CString},
@@ -69,12 +74,13 @@ lazy_static! {
 /// `xmin`, `ymin`, `zmin`, `xmax`, `ymax`, `zmax`.
 pub type Bounds = [f64; 6];
 
+/// An API to query OpenVDB files for metadata.
 pub struct DlOpenVdbQuery {
     file: CString,
 }
 
 impl DlOpenVdbQuery {
-    // Creates a new OpenVDB query for a file.
+    /// Creates a new OpenVDB query for a file.
     pub fn new<P: AsRef<Path>>(file: P) -> Result<Self, ()> {
         if file.as_ref().exists() {
             Ok(Self {
