@@ -1,4 +1,4 @@
-//! Safe wrapper for `lib[3Delight](https://www.3delight.com/)`’s
+//! Safe wrapper for [3Delight](https://www.3delight.com/)’s
 //! [OpenVDB](https://www.openvdb.org/) query API.
 //!
 //! ```
@@ -17,6 +17,7 @@
 //! ```
 //! The `lib3delight` dynamic library can be linked to or it can
 //! be loaded at runtime. The latter is the default.
+//!
 //! Linking can be forced using the feature `link_lib3delight`.
 #![allow(non_snake_case)]
 use std::{
@@ -48,9 +49,9 @@ trait Api {
 }
 
 #[cfg(not(feature = "link_lib3delight"))]
-pub mod dynamic;
+mod dynamic;
 #[cfg(feature = "link_lib3delight")]
-pub mod linked;
+mod linked;
 
 #[cfg(not(feature = "link_lib3delight"))]
 use self::dynamic as api;

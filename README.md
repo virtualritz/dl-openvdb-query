@@ -1,10 +1,14 @@
 
 # Dl OpenVDB Query
 
+Safe wrapper for `lib[3Delight]`(https://www.3delight.com/)’s
+[OpenVDB](https://www.openvdb.org/) query API.
+
 ## Dependencies
 
-This crate needs [3Delight](https://www.3delight.com/) at runtime. If
-you build the crate with the feature `link_lib3delight` you also need
+This crate needs [3Delight](https://www.3delight.com/) at runtime.
+
+If you build the crate with the feature `link_lib3delight` you also need
 this installed at compile time.
 
 ## Features
