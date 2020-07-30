@@ -37,20 +37,16 @@ use std::{
 extern crate dlopen_derive;
 
 trait Api {
-    unsafe fn DlVDBGetFileBBox(
-        &self,
-        filename: *const ::std::os::raw::c_char,
-        bbox: *mut f64,
-    ) -> bool;
+    fn DlVDBGetFileBBox(&self, filename: *const ::std::os::raw::c_char, bbox: *mut f64) -> bool;
 
-    unsafe fn DlVDBGetGridNames(
+    fn DlVDBGetGridNames(
         &self,
         filename: *const ::std::os::raw::c_char,
         num_grids: *mut ::std::os::raw::c_int,
         grid_names: *mut *const *const ::std::os::raw::c_char,
     ) -> bool;
 
-    unsafe fn DlVDBFreeGridNames(&self, grid_names: *const *const ::std::os::raw::c_char);
+    fn DlVDBFreeGridNames(&self, grid_names: *const *const ::std::os::raw::c_char);
 }
 
 #[cfg(not(feature = "link_lib3delight"))]
@@ -95,9 +91,9 @@ impl DlOpenVdbQuery {
     pub fn bounding_box(&self) -> Result<Bounds, ()> {
         let mut bounds = std::mem::MaybeUninit::<Bounds>::uninit();
 
-        match unsafe {
-            DL_OPENVDB_API.DlVDBGetFileBBox(self.file.as_ptr(), bounds.as_mut_ptr() as *mut _ as _)
-        } {
+        match DL_OPENVDB_API
+            .DlVDBGetFileBBox(self.file.as_ptr(), bounds.as_mut_ptr() as *mut _ as _)
+        {
             true => Ok(unsafe { bounds.assume_init() }),
             false => Err(()),
         }
@@ -108,15 +104,14 @@ impl DlOpenVdbQuery {
         let mut num_grids = std::mem::MaybeUninit::<i32>::uninit();
         let grid_names = std::mem::MaybeUninit::<*const *const c_char>::uninit();
 
-        match unsafe {
-            // The memory used to store the grid
+        match             // The memory used to store the grid
             // names is owned by 3Delight.
             DL_OPENVDB_API.DlVDBGetGridNames(
                 self.file.as_ptr(),
                 num_grids.as_mut_ptr(),
                 grid_names.as_ptr() as *const *const _ as _,
             )
-        } {
+         {
             true => unsafe {
                 let grid_names = grid_names.assume_init();
                 let result = slice::from_raw_parts(grid_names, num_grids.assume_init() as usize)

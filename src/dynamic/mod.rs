@@ -8,14 +8,13 @@ pub type ApiImpl = DynamicApi;
 #[derive(WrapperApi)]
 struct CApi {
     DlVDBGetFileBBox:
-        unsafe extern "C" fn(filename: *const ::std::os::raw::c_char, bbox: *mut f64) -> bool,
-    DlVDBGetGridNames: unsafe extern "C" fn(
+        extern "C" fn(filename: *const ::std::os::raw::c_char, bbox: *mut f64) -> bool,
+    DlVDBGetGridNames: extern "C" fn(
         filename: *const ::std::os::raw::c_char,
         num_grids: *mut ::std::os::raw::c_int,
         grid_names: *mut *const *const ::std::os::raw::c_char,
     ) -> bool,
-    DlVDBFreeGridNames:
-        unsafe extern "C" fn(grid_names: *const *const ::std::os::raw::c_char) -> bool,
+    DlVDBFreeGridNames: extern "C" fn(grid_names: *const *const ::std::os::raw::c_char) -> bool,
 }
 
 pub struct DynamicApi {
@@ -43,16 +42,12 @@ impl DynamicApi {
 
 impl Api for DynamicApi {
     #[inline]
-    unsafe fn DlVDBGetFileBBox(
-        &self,
-        filename: *const ::std::os::raw::c_char,
-        bbox: *mut f64,
-    ) -> bool {
+    fn DlVDBGetFileBBox(&self, filename: *const ::std::os::raw::c_char, bbox: *mut f64) -> bool {
         self.api.DlVDBGetFileBBox(filename, bbox)
     }
 
     #[inline]
-    unsafe fn DlVDBGetGridNames(
+    fn DlVDBGetGridNames(
         &self,
         filename: *const ::std::os::raw::c_char,
         num_grids: *mut ::std::os::raw::c_int,
@@ -62,7 +57,7 @@ impl Api for DynamicApi {
     }
 
     #[inline]
-    unsafe fn DlVDBFreeGridNames(&self, grid_names: *const *const ::std::os::raw::c_char) {
+    fn DlVDBFreeGridNames(&self, grid_names: *const *const ::std::os::raw::c_char) {
         self.api.DlVDBFreeGridNames(grid_names);
     }
 }
