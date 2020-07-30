@@ -1,0 +1,33 @@
+[package]
+name = "dl-openvdb-query"
+version = "0.1.0"
+authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
+build = "build.rs"
+edition = "2018"
+license = "BSD-3-Clause"
+license-file = "LICENSE.md"
+description = "Auto-generated Rust bindings for 3Delight’s OpenVDB query API."
+readme = "README.md"
+homepage = "https://www.3delight.com/"
+documentation = "https://nsi.readthedocs.io/"
+repository = "https://github.com/virtualritz/nsi-sys/"
+
+[dependencies]
+lazy_static = "1.4.0"
+
+[dependencies.dl-openvdb-query-sys]
+path = "dl-openvdb-query-sys"
+optional = true
+
+[dependencies.dlopen_derive]
+version = "0.1.4"
+optional = true
+
+[dependencies.dlopen]
+version = "0.1.8"
+optional = true
+
+[features]
+default = ["dlopen_derive", "dlopen"]
+# Specify this to link agains lib3delight
+link_lib3delight = ["dl-openvdb-query-sys"]
