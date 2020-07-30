@@ -8,7 +8,7 @@ license-file = "LICENSE.md"
 description = "Safe Rust wrapper for 3Delight’s OpenVDB query API."
 readme = "README.md"
 homepage = "https://www.3delight.com/"
-keywords = ["graphics", "rendering", "3d", "openvdb", "volume rendering"]
+keywords = ["graphics", "rendering", "3d", "openvdb"]
 categories = ["graphics", "rendering::graphics-api"]
 
 [dependencies]
