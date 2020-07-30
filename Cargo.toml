@@ -15,7 +15,8 @@ categories = ["graphics", "rendering::graphics-api"]
 lazy_static = "1.4.0"
 
 [dependencies.dl-openvdb-query-sys]
-path = "dl-openvdb-query-sys"
+path = "../dl-openvdb-query-sys"
+version = "0.1.0"
 optional = true
 
 [dependencies.dlopen_derive]
