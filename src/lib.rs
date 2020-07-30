@@ -18,7 +18,6 @@
 //! The `lib3delight` dynamic library can be linked to or it can
 //! be loaded at runtime. The latter is the default.
 //! Linking can be forced using the feature `link_lib3delight`.
-
 #![allow(non_snake_case)]
 use std::{
     ffi::{CStr, CString},
