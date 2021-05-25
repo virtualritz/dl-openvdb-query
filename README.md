@@ -31,11 +31,11 @@ let open_vdb_query =
 let min = -0.9416000247001648;
 let max =  1.0593000277876854;
 assert_eq!(
-    [min, min, min, max, max, max],
-    open_vdb_query.bounding_box().unwrap()
+    open_vdb_query.bounding_box().unwrap(),
+    [min, min, min, max, max, max]
 );
 assert_eq!(
-    vec!["points"],
-    open_vdb_query.grid_names().unwrap()
+    open_vdb_query.grid_names().unwrap(),
+    vec!["points"]
 );
 ```

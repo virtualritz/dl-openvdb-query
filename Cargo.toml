@@ -1,10 +1,9 @@
 [package]
 name = "dl-openvdb-query"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2018"
-license = "BSD-3-Clause"
-license-file = "LICENSE.md"
+license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
 description = "Safe Rust wrapper for 3Delight’s OpenVDB metadata query API."
 readme = "README.md"
 keywords = ["graphics", "rendering", "3d", "openvdb"]
