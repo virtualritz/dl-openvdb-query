@@ -1,5 +1,5 @@
 
-# Dl OpenVDB Query
+# `dl-openvdb-query`
 
 Safe wrapper for lib3Delight’s [OpenVDB](https://www.openvdb.org/)
 metadata query API.
