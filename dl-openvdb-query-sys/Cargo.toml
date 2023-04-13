@@ -1,0 +1,21 @@
+[package]
+name = "dl-openvdb-query-sys"
+version = "0.1.3"
+authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
+license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
+build = "build.rs"
+edition = "2021"
+description = "Auto-generated Rust bindings for 3Delight’s OpenVDB metadata query API."
+repository = "https://github.com/virtualritz/dl-openvdb-query"
+documentation = "https://docs.rs/dl-openvdb-query-sys/"
+
+[features]
+# Whether to download a dynamic library version of 3Delight
+# if the renderer can't be found locally. The renderer is
+# needed as soon as the crate is linked against (e.g. for
+# running the tests).
+download_3delight_lib = []
+
+[build-dependencies]
+bindgen = "0.64"
+reqwest = { version = "0.11", features = ["blocking"] }
