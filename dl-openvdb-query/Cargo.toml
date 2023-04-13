@@ -1,6 +1,6 @@
 [package]
 name = "dl-openvdb-query"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
 edition = "2021"
 license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
@@ -19,7 +19,7 @@ cargo-husky = "1.5.0"
 lazy_static = "1.4.0"
 dlopen_derive = { version = "0.1.4", optional = true }
 dlopen = { version = "0.1.8", optional = true }
-dl-openvdb-query-sys = { version = "0.1.1", path = "../dl-openvdb-query-sys", optional = true }
+dl-openvdb-query-sys = { version = "0.1.3", path = "../dl-openvdb-query-sys", optional = true }
 thiserror = "1.0.40"
 
 [features]
