@@ -1,6 +1,7 @@
 use crate::Api;
 extern crate dlopen;
 use dlopen::wrapper::{Container, WrapperApi};
+use dlopen_derive::WrapperApi;
 use std::{
     env,
     os::raw::{c_char, c_float, c_int},
@@ -31,18 +32,40 @@ struct CApi {
 
 pub struct DynamicApi(Container<CApi>);
 
+#[cfg(target_os = "linux")]
+static DELIGHT_APP_PATH: &str = "/usr/local/3delight/lib/lib3delight.so";
+
+#[cfg(target_os = "macos")]
+static DELIGHT_APP_PATH: &str = "/Applications/3Delight/lib/lib3delight.dylib";
+
+#[cfg(target_os = "windows")]
+static DELIGHT_APP_PATH: &str = "C:/%ProgramFiles%/3Delight/bin/3Delight.dll";
+
+#[cfg(target_os = "linux")]
+static DELIGHT_LIB: &str = "lib3delight.so";
+
+#[cfg(target_os = "macos")]
+static DELIGHT_LIB: &str = "lib3delight.dylib";
+
+#[cfg(target_os = "windows")]
+static DELIGHT_LIB: &str = "3Delight.dll";
+
 impl DynamicApi {
-    // macOS implementation
     #[inline]
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
-        match unsafe { Container::load("/Applications/3Delight/lib/lib3delight.dylib") }
-            .or_else(|_| unsafe { Container::load("lib3delight.dylib") })
+        match unsafe { Container::load(DELIGHT_APP_PATH) }
+            .or_else(|_| unsafe { Container::load(DELIGHT_LIB) })
             .or_else(|_| match env::var("DELIGHT") {
-                Err(e) => Err(Box::new(e) as Box<dyn std::error::Error>),
+                Err(e) => Err(Box::new(e) as _),
                 Ok(delight) => unsafe {
-                    Container::load(Path::new(&delight).join("lib").join("lib3delight.dylib"))
+                    #[cfg(any(target_os = "linux", target_os = "macos"))]
+                    let path = Path::new(&delight).join("lib").join(DELIGHT_LIB);
+                    #[cfg(target_os = "windows")]
+                    let path = Path::new(&delight).join("bin").join(DELIGHT_LIB);
+
+                    Container::load(path)
                 }
-                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>),
+                .map_err(|e| Box::new(e) as _),
             }) {
             Err(e) => Err(e),
             Ok(api) => Ok(DynamicApi(api)),

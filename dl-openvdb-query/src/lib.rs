@@ -25,22 +25,21 @@
 //!     vec!["points"]
 //! );
 //! ```
+//!
 //! The `lib3delight` dynamic library can be linked to or it can
 //! be loaded at runtime. The latter is the default.
 //!
 //! Linking can be forced using the feature `link_lib3delight`.
 #![allow(non_snake_case)]
 
+use lazy_static::lazy_static;
 use std::{
     ffi::{CStr, CString},
     os::raw::{c_char, c_float, c_int},
     path::Path,
     slice,
 };
-
-#[cfg(not(feature = "link_lib3delight"))]
-#[macro_use]
-extern crate dlopen_derive;
+use thiserror::Error;
 
 trait Api {
     fn DlVDBGetFileBBox(&self, filename: *const c_char, bbox: *mut f64) -> bool;
@@ -67,16 +66,15 @@ trait Api {
 
 #[cfg(not(feature = "link_lib3delight"))]
 mod dynamic;
-#[cfg(feature = "link_lib3delight")]
-mod linked;
 
 #[cfg(not(feature = "link_lib3delight"))]
 use self::dynamic as api;
+
+#[cfg(feature = "link_lib3delight")]
+mod linked;
+
 #[cfg(feature = "link_lib3delight")]
 use self::linked as api;
-
-#[macro_use]
-extern crate lazy_static;
 
 lazy_static! {
     static ref DL_OPENVDB_API: api::ApiImpl = api::ApiImpl::new().unwrap();
@@ -91,32 +89,44 @@ pub struct DlOpenVdbQuery {
     file: CString,
 }
 
+#[derive(Error, Debug)]
+pub enum Error {
+    #[error("OpenVDB file does not exist")]
+    MissingVdbFile,
+    #[error("bounding box could not be read")]
+    BoundsCouldNotBeRead,
+    #[error("grid names could not be read")]
+    GridNamesCouldNotBeRead,
+}
+
+type Result<T> = std::result::Result<T, Error>;
+
 impl DlOpenVdbQuery {
     /// Creates a new OpenVDB query for a file.
-    pub fn new<P: AsRef<Path>>(file: P) -> Result<Self, ()> {
+    pub fn new<P: AsRef<Path>>(file: P) -> Result<Self> {
         if file.as_ref().exists() {
             Ok(Self {
                 file: CString::new(file.as_ref().to_string_lossy().into_owned()).unwrap(),
             })
         } else {
-            Err(())
+            Err(Error::MissingVdbFile)
         }
     }
 
     /// Returns the bounding box of the OpenVDB file.
-    pub fn bounding_box(&self) -> Result<Bounds, ()> {
+    pub fn bounding_box(&self) -> Result<Bounds> {
         let mut bounds = std::mem::MaybeUninit::<Bounds>::uninit();
 
         match DL_OPENVDB_API
             .DlVDBGetFileBBox(self.file.as_ptr(), bounds.as_mut_ptr() as *mut _ as _)
         {
             true => Ok(unsafe { bounds.assume_init() }),
-            false => Err(()),
+            false => Err(Error::BoundsCouldNotBeRead),
         }
     }
 
     /// Returns the names of all the grids stored in the OpenVDB file.
-    pub fn grid_names(&self) -> Result<Vec<String>, ()> {
+    pub fn grid_names(&self) -> Result<Vec<String>> {
         let mut num_grids = std::mem::MaybeUninit::<c_int>::uninit();
         let grid_names = std::mem::MaybeUninit::<*const *const c_char>::uninit();
 
@@ -136,12 +146,12 @@ impl DlOpenVdbQuery {
                 DL_OPENVDB_API.DlVDBFreeGridNames(grid_names);
                 Ok(result)
             },
-            false => Err(()),
+            false => Err(Error::GridNamesCouldNotBeRead),
         }
     }
 
     /// Returns the specified grid as a flat [`Vec<f32>`] of points `[x0, y0, z0, ..., xn, yn, zn]`.
-    pub fn density_to_points(&self, density_grid_name: impl Into<Vec<u8>>) -> Result<Vec<f32>, ()> {
+    pub fn density_to_points(&self, density_grid_name: impl Into<Vec<u8>>) -> Option<Vec<f32>> {
         let mut num_points = std::mem::MaybeUninit::<usize>::uninit();
         let points = std::mem::MaybeUninit::<*const c_float>::uninit();
 
@@ -157,15 +167,15 @@ impl DlOpenVdbQuery {
 
         unsafe {
             let num_points = num_points.assume_init();
-            println!("Boom: {}", num_points);
+
             if num_points != 0 {
                 let points = points.assume_init();
                 let points_vec = slice::from_raw_parts(points, num_points * 3).to_vec();
                 // Tell 3Delight to dispose the memory.
                 DL_OPENVDB_API.DlVDBFreePoints(points);
-                Ok(points_vec)
+                Some(points_vec)
             } else {
-                Err(())
+                None
             }
         }
     }

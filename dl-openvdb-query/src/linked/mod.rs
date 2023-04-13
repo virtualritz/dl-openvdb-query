@@ -18,7 +18,7 @@ impl LinkedApi {
 impl Api for LinkedApi {
     #[inline]
     fn DlVDBGetFileBBox(&self, filename: *const c_char, bbox: *mut f64) -> bool {
-        vdb_sys::DlVDBGetFileBBox(filename, bbox)
+        unsafe { vdb_sys::DlVDBGetFileBBox(filename, bbox) }
     }
 
     #[inline]
@@ -28,12 +28,12 @@ impl Api for LinkedApi {
         num_grids: *mut c_int,
         grid_names: *mut *const *const c_char,
     ) -> bool {
-        vdb_sys::DlVDBGetGridNames(filename, num_grids, grid_names)
+        unsafe { vdb_sys::DlVDBGetGridNames(filename, num_grids, grid_names) }
     }
 
     #[inline]
     fn DlVDBFreeGridNames(&self, grid_names: *const *const c_char) {
-        vdb_sys::DlVDBFreeGridNames(grid_names);
+        unsafe { vdb_sys::DlVDBFreeGridNames(grid_names) };
     }
 
     #[inline]
@@ -44,11 +44,11 @@ impl Api for LinkedApi {
         num_points: *mut usize,
         points: *mut *const c_float,
     ) {
-        vdb_sys::DlVDBGeneratePoints(filename, densitygrid, num_points, points);
+        unsafe { vdb_sys::DlVDBGeneratePoints(filename, densitygrid, num_points, points) };
     }
 
     #[inline]
     fn DlVDBFreePoints(&self, points: *const c_float) {
-        vdb_sys::DlVDBFreePoints(points);
+        unsafe { vdb_sys::DlVDBFreePoints(points) };
     }
 }

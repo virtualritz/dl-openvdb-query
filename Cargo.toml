@@ -1,31 +1,5 @@
-[package]
-name = "dl-openvdb-query"
-version = "0.1.2"
-authors = ["Moritz Moeller <virtualritz@protonmail.com>"]
-edition = "2018"
-license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
-description = "Safe Rust wrapper for 3Delight’s OpenVDB metadata query API."
-readme = "README.md"
-keywords = ["graphics", "rendering", "3d", "openvdb"]
-categories = ["graphics", "rendering::graphics-api"]
-homepage = "https://www.3delight.com/"
-repository = "https://github.com/virtualritz/dl-openvdb-query"
-documentation = "https://docs.rs/dl-openvdb-query/"
-
-[dev-dependencies]
-cargo-husky = "1.5.0"
-
-[dependencies]
-lazy_static = "1.4.0"
-dlopen_derive = { version = "0.1.4", optional = true }
-dlopen = { version = "0.1.8", optional = true }
-
-[dependencies.dl-openvdb-query-sys]
-path = "../dl-openvdb-query-sys"
-version = "0.1.1"
-optional = true
-
-[features]
-default = ["dlopen_derive", "dlopen"]
-# Specify this to link agains lib3delight
-link_lib3delight = ["dl-openvdb-query-sys"]
+[workspace]
+members = [
+    'dl-openvdb-query-sys',
+    'dl-openvdb-query'
+]

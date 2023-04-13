@@ -1,7 +1,7 @@
 
-# `dl-openvdb-query`
+# Dl OpenVDB Query
 
-Safe wrapper for `lib3delight`’s [OpenVDB](https://www.openvdb.org/)
+Safe wrapper for lib3Delight’s [OpenVDB](https://www.openvdb.org/)
 metadata query API.
 
 ## Dependencies
@@ -14,8 +14,9 @@ this installed at compile time.
 ## Features
 
 ```toml
-[dependencies]
-dl-openvdb-query = { version = "0.2", features = ["link_lib3delight"] }
+[build-dependencies.dl-openvdb-query]
+version = "0.1.0"
+features = ["link_lib3delight"]
 ```
 
 ## Use
