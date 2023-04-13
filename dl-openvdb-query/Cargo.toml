@@ -11,6 +11,7 @@ categories = ["graphics", "rendering::graphics-api"]
 homepage = "https://www.3delight.com/"
 repository = "https://github.com/virtualritz/dl-openvdb-query"
 documentation = "https://docs.rs/dl-openvdb-query/"
+exclude = [".github/**/*", "tests/**/*"]
 
 [dev-dependencies]
 cargo-husky = "1.5.0"
